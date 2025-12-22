@@ -1,0 +1,7 @@
+{
+  "name": "PT-CCloud",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

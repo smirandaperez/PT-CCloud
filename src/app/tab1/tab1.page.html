@@ -1,0 +1,34 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Generos & Libros
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-item color="warning" *ngIf="(online$ | async)?.connected === false">
+  <ion-label>Modo offline · usando datos guardados</ion-label>
+</ion-item>
+
+<ion-item color="medium" *ngIf="(status$ | async) === 'empty'">
+  <ion-label>No hay datos guardados aún</ion-label>
+</ion-item>
+
+<ion-item color="danger" *ngIf="(status$ | async) === 'error'">
+  <ion-label>Error al cargar datos locales</ion-label>
+</ion-item>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Generos & Libros</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-list>
+    <ion-item button *ngFor="let genero of generos" (click)="navigateToGenero(genero)">
+      <ion-label>{{ genero.nombre }}</ion-label>
+      
+    </ion-item>
+  </ion-list>
+</ion-content>

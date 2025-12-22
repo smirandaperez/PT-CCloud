@@ -1,0 +1,28 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Libros del género: {{ genero }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-spinner *ngIf="loading"></ion-spinner>
+
+  <ion-text color="danger" *ngIf="error">{{ errorMessage }}</ion-text>
+
+  <ion-text color="medium" *ngIf="!loading && !error && libros.length === 0">
+    No se encontraron libros.
+  </ion-text>
+
+  <ion-list *ngIf="!loading && !error && libros.length > 0">
+    <ion-item button *ngFor="let libro of libros" (click)="verDetalleLibro(libro)">
+      <ion-label>
+        <h2>{{ libro.titulo }}</h2>
+        <p *ngIf="libro.autor.length; else sinAutor">{{ libro.autor.join(', ') }}</p>
+        <ng-template #sinAutor>
+          <p>Sin autor</p>
+        </ng-template>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

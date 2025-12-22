@@ -1,0 +1,26 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Busqueda de libros    
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-searchbar placeholder="Buscar libro" (ionChange)="buscarLibro($event)"></ion-searchbar>
+  <ion-spinner *ngIf="loading"></ion-spinner>
+  <ion-list *ngIf="libros.length > 0">
+    <ion-item *ngFor="let libro of libros">
+      <ion-label>
+        <h2>{{ libro.titulo }}</h2>
+        <p *ngIf="libro.autor.length; else sinAutor">{{ libro.autor.join(', ') }}</p>
+        <ng-template #sinAutor>
+          <p>Sin autor</p>
+        </ng-template>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-text *ngIf="libros.length === 0">
+    No se encontraron libros
+  </ion-text>
+</ion-content>

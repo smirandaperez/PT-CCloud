@@ -1,0 +1,36 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>{{ lista?.nombre || 'Lista'}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ng-container *ngIf="lista; else noLista">
+    <p *ngIf="libros.length === 0">
+      Aún no hay libros en esta lista.
+    </p>
+
+    <ion-list *ngIf="libros.length > 0">
+      <ion-item *ngFor="let libro of libros">
+        <ion-label>
+          <h2>{{ libro.titulo }}</h2>
+          <p *ngIf="libro.autor?.length; else sinAutor">{{ libro.autor.join(', ') }}</p>
+          <ng-template #sinAutor>
+            <p>Sin autor</p>
+          </ng-template>
+        </ion-label>
+        <ion-button fill="clear" color="danger" slot="end" (click)="removeLibro(libro.id)">
+          Quitar libro<ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+
+    
+  </ng-container>
+
+  <ng-template #noLista>
+    <ion-text color="danger">
+      No se encontró la lista.
+    </ion-text>
+  </ng-template>
+</ion-content>

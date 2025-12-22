@@ -1,0 +1,36 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Mis Listas de lectura
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list *ngIf="listas.length > 0 else noListas">
+    <ion-item button *ngFor="let lista of listas" (click)="abrirLista(lista)">
+      <ion-label>
+        <h2>{{ lista.nombre }}</h2>
+        <p>{{ lista.createdAt | date:'dd/MM/yyyy' }}</p>
+        <p>{{ listaService.getLibrosDeLista(lista.id).length }} libros</p>
+      </ion-label>
+
+      <ion-button fill="clear" slot="end" (click)="$event.stopPropagation(); renombrarLista(lista)">
+        Renombrar Lista<ion-icon name="pencil-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+
+      <ion-button fill="clear" slot="end" color="danger" (click)="$event.stopPropagation(); eliminarLista(lista.id)">
+        Eliminar Lista<ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+
+    </ion-item>
+  </ion-list>
+
+  <ng-template #noListas>
+    <ion-text color="medium">
+      Aún no hay listas de lectura.
+    </ion-text>
+  </ng-template>
+
+  
+</ion-content>

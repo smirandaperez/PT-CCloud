@@ -1,0 +1,40 @@
+<ion-header>
+    <ion-toolbar>
+      <ion-title>Guardar en lista</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="cancelar()">Cerrar</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content class="ion-padding">
+    <ion-segment [(ngModel)]="modo">
+      <ion-segment-button value="existente">Existente</ion-segment-button>
+      <ion-segment-button value="nueva">Nueva</ion-segment-button>
+    </ion-segment>
+  
+    <div *ngIf="modo === 'existente'" class="ion-margin-top">
+      <ion-item>
+        <ion-label>Lista</ion-label>
+        <ion-select [(ngModel)]="listaSeleccionada" placeholder="Selecciona una lista">
+          <ion-select-option *ngFor="let l of listas" [value]="l.id">
+            {{ l.nombre }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+  
+    <div *ngIf="modo === 'nueva'" class="ion-margin-top">
+      <ion-item>
+        <ion-label position="stacked">Nombre de la lista</ion-label>
+        <ion-input [(ngModel)]="nuevoNombre" maxlength="20" placeholder="Ej: Favoritos"></ion-input>
+      </ion-item>
+      <ion-text color="medium">
+        <p class="ion-padding-start">Máximo 20 caracteres. Máximo 3 listas.</p>
+      </ion-text>
+    </div>
+  
+    <ion-button expand="block" class="ion-margin-top" (click)="guardar()">
+      Guardar aquí
+    </ion-button>
+  </ion-content>
