@@ -4,13 +4,12 @@ import { Libro } from '../modelos/libro.modelo';
 import {map} from 'rxjs/operators';
 import { catchError, of, timeout, Observable } from 'rxjs';
 import { forkJoin, switchMap} from 'rxjs';
+import { environment } from 'src/environments/environment';
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable({providedIn: 'root'})
 export class OpenLibraryService {
 
-    private apiUrl = '/openlibrary';
+    private apiUrl = environment.apiBaseUrl;
 
     constructor(private http: HttpClient) {}
 
@@ -18,7 +17,6 @@ export class OpenLibraryService {
         console.log(genero);
         return this.http.get<any>(`${this.apiUrl}/subjects/${genero}.json?limit=10`)
         .pipe(
-            //timeout(5000),
             map(response  => 
             {
                 const works = Array.isArray(response?.works) ? response.works : []; 
