@@ -10,14 +10,14 @@ import { environment } from 'src/environments/environment';
 export class OpenLibraryService {
 
     private apiUrl = environment.apiBaseUrl;
-    private corsProxy = 'https://api.allorigins.win/get?url=';
+    
 
     constructor(private http: HttpClient) {}
 
     private getUrl(endpoint: string): string {
-        const fullUrl = `${this.apiUrl}${endpoint}`;
-        return `${this.corsProxy}${encodeURIComponent(fullUrl)}`;
-    }
+      const fullUrl = `${this.apiUrl}${endpoint}`;
+      return `${fullUrl}`;
+  }
 
     private processProxyResponse(response: any): any {
         if (response?.contents) {
@@ -90,7 +90,10 @@ private getAutorNameByKey(authorKey: string) {
   }
 
 getLibroById(id: string) {
-    return this.http.get<any>(this.getUrl(`/${id}.json`)).pipe(
+    const decodedId = id.replace(/%2F/g, '/');
+    const cleanedId = decodedId.replace(/\/+/g, '/');
+    const normalizedId = cleanedId.startsWith('/') ? cleanedId : `/${cleanedId}`;
+    return this.http.get<any>(this.getUrl(`${normalizedId}.json`)).pipe(
       map(response => this.processProxyResponse(response)),
       switchMap(work => {
         const desc =
