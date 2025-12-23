@@ -10,7 +10,7 @@ export class LibroRepository {
   async save(libro: Libro) {
     await this.db.connection.run(
       `INSERT OR REPLACE INTO libros
-       (id, titulo, autores, descripcion, portada)
+       (id, titulo, autor, descripcion, portada)
        VALUES (?, ?, ?, ?, ?)`,
       [
         libro.id,
@@ -47,7 +47,7 @@ export class LibroRepository {
     return (res.values ?? []).map(r => ({
       id: r.id,
       titulo: r.titulo,
-      autor: JSON.parse(r.autores ?? '[]'),
+      autor: JSON.parse(r.autor ?? '[]'),
       genero: r.genero,
       fechaPublicacion: r.fechaPublicacion,
       descripcion: r.descripcion,
