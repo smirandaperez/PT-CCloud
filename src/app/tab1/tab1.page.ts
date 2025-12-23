@@ -11,7 +11,7 @@ import { NavController } from '@ionic/angular';
 })
 export class Tab1Page {
 
-  constructor(private listaService: ListaService, private network: NetworkService, private navCtrl: NavController) {}
+  constructor(private listaService: ListaService, private network: NetworkService, private navCtrl: NavController) { }
 
   status$ = this.listaService.statusChanges();
   online$ = this.network.statusChanges();
@@ -23,9 +23,9 @@ export class Tab1Page {
     { id: 'fantasy', nombre: 'Fantasía' },
 
   ];
-  
 
-  navigateToGenero(genero: any) {    
+
+  navigateToGenero(genero: any) {
     this.navCtrl.navigateForward(['/tabs/libros', genero.id]);
   }
 }

@@ -14,43 +14,78 @@ export class LibrosPage implements OnInit {
 
   libros: any[] = [];
   loading = true;
+  loadingMore = false;
   error = false;
   errorMessage = '';
   genero = '';
+  offset = 0;
+  limit = 10;
+  hasMore = true;
 
   constructor(private router: Router, private route: ActivatedRoute, private openLibraryService: OpenLibraryService) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       const g = this.route.snapshot.paramMap.get('genero');
-      if(g){
+      if (g) {
         this.genero = g;
-        this.cargarLibros(g);
+        this.resetPagination();
+        this.cargarLibros(g, true);
       }
     });
   }
 
-    cargarLibros(genero: string) {    
-    this.loading = true;
-    this.errorMessage = '';
+  resetPagination() {
+    this.offset = 0;
+    this.hasMore = true;
     this.libros = [];
+  }
 
-    this.openLibraryService.getLibrosByGenero(genero).subscribe({
-      next: (data) => {        
-        this.libros = data;
+  cargarLibros(genero: string, reset: boolean = false) {
+    if (reset) {
+      this.loading = true;
+      this.errorMessage = '';
+      this.libros = [];
+      this.offset = 0;
+      this.hasMore = true;
+    } else {
+      this.loadingMore = true;
+    }
+
+    this.openLibraryService.getLibrosByGenero(genero, this.limit, this.offset).subscribe({
+      next: (data) => {
+        if (data.length > 0) {
+          this.libros = [...this.libros, ...data];
+          this.offset += data.length;
+          this.hasMore = data.length === this.limit;
+        } else {
+          this.hasMore = false;
+        }
         this.loading = false;
+        this.loadingMore = false;
       },
       error: (err) => {
-        this.errorMessage = 'Error al cargar los libros';        
+        this.errorMessage = 'Error al cargar los libros';
         this.loading = false;
+        this.loadingMore = false;
         this.error = true;
       }
     });
-    
-    }
 
-    verDetalleLibro(libro: Libro) {
-      const id = encodeURIComponent(libro.id);
-      this.router.navigate(['/tabs/detalle-libro', encodeURIComponent(id)]);
+  }
+
+  cargarMas() {
+    if (!this.loadingMore && this.hasMore) {
+      this.cargarLibros(this.genero, false);
     }
   }
+
+  verDetalleLibro(libro: Libro) {
+    const id = encodeURIComponent(libro.id);
+    const genero = this.genero;
+    const returnUrl = `/tabs/libros/${genero}`;
+    this.router.navigate(['/tabs/detalle-libro', encodeURIComponent(id)], {
+      queryParams: { returnUrl, origen: 'tab1' }
+    });
+  }
+}

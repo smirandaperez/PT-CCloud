@@ -1,5 +1,8 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="" defaultHref="/tabs/tab1"></ion-back-button>
+    </ion-buttons>
     <ion-title>Libros del género: {{ genero }}</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -25,4 +28,19 @@
       </ion-label>
     </ion-item>
   </ion-list>
+
+  <div *ngIf="!loading && !error && libros.length > 0" class="ion-text-center ion-padding">
+    <ion-button 
+      *ngIf="hasMore" 
+      (click)="cargarMas()" 
+      [disabled]="loadingMore"
+      fill="outline"
+      size="small">
+      <ion-spinner *ngIf="loadingMore" name="crescent" style="margin-right: 8px;"></ion-spinner>
+      {{ loadingMore ? 'Cargando...' : 'Cargar más' }}
+    </ion-button>
+    <ion-text *ngIf="!hasMore" color="medium">
+      <p>No hay más libros disponibles</p>
+    </ion-text>
+  </div>
 </ion-content>

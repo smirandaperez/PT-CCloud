@@ -12,27 +12,27 @@ import { Libro } from '../modelos/libro.modelo';
 })
 export class DetalleListasPage implements OnInit {
   lista?: Lista;
-  libros : Libro[] = [];
+  libros: Libro[] = [];
   constructor(private route: ActivatedRoute, private listaService: ListaService) { }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
-    if(!id){return;}
-    
-    this.lista = this.listaService.getListas().find(l => l.id === id) ?? {id, nombre: '', createdAt: Date.now()};
-    
+    if (!id) { return; }
+
+    this.lista = this.listaService.getListas().find(l => l.id === id) ?? { id, nombre: '', createdAt: Date.now() };
+
   }
 
-ionViewWillEnter() {
-  const id = this.route.snapshot.paramMap.get('id')!;
-  this.lista = this.listaService.getListaById(id);
-  this.libros = this.listaService.getLibrosDeLista(id);
-}
+  ionViewWillEnter() {
+    const id = this.route.snapshot.paramMap.get('id')!;
+    this.lista = this.listaService.getListaById(id);
+    this.libros = this.listaService.getLibrosDeLista(id);
+  }
 
-removeLibro(libroId: string) {
-  const listaId = this.route.snapshot.paramMap.get('id')!;
-  this.listaService.removeLibroDeLista(listaId, libroId);
-  this.libros = this.listaService.getLibrosDeLista(listaId); 
-}
+  removeLibro(libroId: string) {
+    const listaId = this.route.snapshot.paramMap.get('id')!;
+    this.listaService.removeLibroDeLista(listaId, libroId);
+    this.libros = this.listaService.getLibrosDeLista(listaId);
+  }
 
 }

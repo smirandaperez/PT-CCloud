@@ -16,13 +16,14 @@ import { LibroRepository } from '../servicios/libro.respository';
 })
 export class DetalleLibroPage implements OnInit {
 
-  detalleLibro : any;
+  detalleLibro: any;
   loading = true;
+  defaultBackHref: string | null = null;
 
   constructor(
-    private listaService: ListaService, 
-    private router: Router, 
-    private route: ActivatedRoute, 
+    private listaService: ListaService,
+    private router: Router,
+    private route: ActivatedRoute,
     private api: OpenLibraryService,
     private modalController: ModalController,
     private toastController: ToastController,
@@ -31,33 +32,45 @@ export class DetalleLibroPage implements OnInit {
 
   ngOnInit() {
     const rawId = this.route.snapshot.paramMap.get('id');
-    if(!rawId){return;}
+    if (!rawId) { return; }
     const id = decodeURIComponent(rawId);
-    if(!id){return;}
+    if (!id) { return; }
+
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    if (returnUrl) {
+      this.defaultBackHref = returnUrl;
+    } else {
+      const origen = this.route.snapshot.queryParamMap.get('origen');
+      if (origen) {
+        this.defaultBackHref = origen === 'tab2' ? '/tabs/tab2' : '/tabs/tab1';
+      } else {
+        this.defaultBackHref = null;
+      }
+    }
 
     this.api.getLibroById(id).subscribe({
       next: (data) => { this.detalleLibro = data; this.loading = false; },
-      error : () => { this.loading = false },
+      error: () => { this.loading = false },
     });
   }
 
-  
+
 
   async abrirGuardarEnLista() {
     const listas = this.listaService.getListas();
-  
+
     const modal = await this.modalController.create({
       component: GuardarListaComponent,
       componentProps: { listas }
     });
-  
+
     await modal.present();
     const { data, role } = await modal.onWillDismiss();
     if (role !== 'ok' || !data) return;
-  
+
     try {
       let listaId: string;
-  
+
       if (data.mode === 'existente') {
         listaId = data.listaId;
       } else {
@@ -65,7 +78,7 @@ export class DetalleLibroPage implements OnInit {
       }
 
       await this.guardarLibroEnLista(listaId);
-  
+
       const t = await this.toastController.create({
         message: 'Libro guardado en la lista',
         duration: 1500,
@@ -81,7 +94,7 @@ export class DetalleLibroPage implements OnInit {
       t.present();
     }
   }
-  
+
   async agregarAListaDeLectura() {
     const listaId = await this.listaService.getOrCreateListaDeLectura();
     await this.guardarLibroEnLista(listaId);
@@ -97,19 +110,19 @@ export class DetalleLibroPage implements OnInit {
       genero: this.detalleLibro.genero,
       fechaPublicacion: this.detalleLibro.fechaPublicacion,
     };
-  
+
     await this.libroRepository.save(libro);
-  
+
     await this.listaService.addLibroALista(listaId, libro.id);
-    
+
   }
-  
+
   get titulo(): string {
     return this.detalleLibro?.title ?? this.detalleLibro?.titulo ?? 'Sin título';
   }
 
   get autores(): string[] {
-    
+
     if (Array.isArray(this.detalleLibro?.autor)) return this.detalleLibro.autor;
     if (Array.isArray(this.detalleLibro?.authors)) return this.detalleLibro.authors;
     return [];

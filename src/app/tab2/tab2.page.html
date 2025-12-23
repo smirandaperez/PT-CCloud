@@ -10,7 +10,7 @@
   <ion-searchbar placeholder="Buscar libro" (ionChange)="buscarLibro($event)"></ion-searchbar>
   <ion-spinner *ngIf="loading"></ion-spinner>
   <ion-list *ngIf="libros.length > 0">
-    <ion-item *ngFor="let libro of libros">
+    <ion-item button *ngFor="let libro of libros" (click)="verDetalleLibro(libro)">
       <ion-label>
         <h2>{{ libro.titulo }}</h2>
         <p *ngIf="libro.autor.length; else sinAutor">{{ libro.autor.join(', ') }}</p>
@@ -20,7 +20,23 @@
       </ion-label>
     </ion-item>
   </ion-list>
-  <ion-text *ngIf="libros.length === 0">
+  
+  <div *ngIf="libros.length > 0" class="ion-text-center ion-padding">
+    <ion-button 
+      *ngIf="hasMore" 
+      (click)="cargarMas()" 
+      [disabled]="loadingMore"
+      fill="outline"
+      size="small">
+      <ion-spinner *ngIf="loadingMore" name="crescent" style="margin-right: 8px;"></ion-spinner>
+      {{ loadingMore ? 'Cargando...' : 'Cargar más' }}
+    </ion-button>
+    <ion-text *ngIf="!hasMore" color="medium">
+      <p>No hay más resultados</p>
+    </ion-text>
+  </div>
+
+  <ion-text *ngIf="!loading && libros.length === 0">
     No se encontraron libros
   </ion-text>
 </ion-content>

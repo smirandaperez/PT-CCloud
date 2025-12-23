@@ -17,4 +17,4 @@ import { DetalleLibroPage } from './detalle-libro.page';
   ],
   declarations: [DetalleLibroPage]
 })
-export class DetalleLibroPageModule {}
+export class DetalleLibroPageModule { }

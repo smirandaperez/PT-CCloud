@@ -10,19 +10,15 @@ import { environment } from 'src/environments/environment';
 export class OpenLibraryService {
 
     private apiUrl = environment.apiBaseUrl;
-    // Proxy CORS público para evitar problemas de CORS
     private corsProxy = 'https://api.allorigins.win/get?url=';
 
     constructor(private http: HttpClient) {}
 
-    // Método helper para construir la URL con proxy CORS si es necesario
     private getUrl(endpoint: string): string {
         const fullUrl = `${this.apiUrl}${endpoint}`;
-        // Usar proxy CORS para evitar problemas
         return `${this.corsProxy}${encodeURIComponent(fullUrl)}`;
     }
 
-    // Método helper para procesar la respuesta del proxy CORS
     private processProxyResponse(response: any): any {
         if (response?.contents) {
             try {
@@ -35,9 +31,9 @@ export class OpenLibraryService {
         return response;
     }
 
-    getLibrosByGenero(genero: string){
+    getLibrosByGenero(genero: string, limit: number = 10, offset: number = 0){
         console.log(genero);
-        return this.http.get<any>(this.getUrl(`/subjects/${genero}.json?limit=10`))
+        return this.http.get<any>(this.getUrl(`/subjects/${genero}.json?limit=${limit}&offset=${offset}`))
         .pipe(
             map(response => this.processProxyResponse(response)),
             map(response  => 
@@ -62,8 +58,8 @@ export class OpenLibraryService {
 
 
     
-searchLibro(query: string){
-    return this.http.get<any>(this.getUrl(`/search.json?q=${query}&limit=10`))
+searchLibro(query: string, limit: number = 10, offset: number = 0){
+    return this.http.get<any>(this.getUrl(`/search.json?q=${query}&limit=${limit}&offset=${offset}`))
     .pipe(
         map(response => this.processProxyResponse(response)),
         map(response  => {
@@ -86,7 +82,6 @@ searchLibro(query: string){
 }
 
 private getAutorNameByKey(authorKey: string) {
-    // authorKey viene como "/authors/OLxxxA"
     return this.http.get<any>(this.getUrl(`${authorKey}.json`)).pipe(
       map(response => this.processProxyResponse(response)),
       map(a => a?.name ?? ''),
