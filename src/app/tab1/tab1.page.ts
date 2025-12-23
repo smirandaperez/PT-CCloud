@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { ListaService } from '../servicios/lista.service';
 import { NetworkService } from '../servicios/network.service';
-import { Network } from '@capacitor/network';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab1',
@@ -12,7 +11,7 @@ import { Network } from '@capacitor/network';
 })
 export class Tab1Page {
 
-  constructor(private router: Router, private listaService: ListaService, private network: NetworkService) {}
+  constructor(private listaService: ListaService, private network: NetworkService, private navCtrl: NavController) {}
 
   status$ = this.listaService.statusChanges();
   online$ = this.network.statusChanges();
@@ -26,7 +25,7 @@ export class Tab1Page {
   ];
   
 
-  navigateToGenero(genero: any) {
-    this.router.navigate(['/tabs/libros', genero.id]);
+  navigateToGenero(genero: any) {    
+    this.navCtrl.navigateForward(['/tabs/libros', genero.id]);
   }
 }

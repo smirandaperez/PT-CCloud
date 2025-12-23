@@ -10,13 +10,36 @@ import { environment } from 'src/environments/environment';
 export class OpenLibraryService {
 
     private apiUrl = environment.apiBaseUrl;
+    // Proxy CORS público para evitar problemas de CORS
+    private corsProxy = 'https://api.allorigins.win/get?url=';
 
     constructor(private http: HttpClient) {}
 
+    // Método helper para construir la URL con proxy CORS si es necesario
+    private getUrl(endpoint: string): string {
+        const fullUrl = `${this.apiUrl}${endpoint}`;
+        // Usar proxy CORS para evitar problemas
+        return `${this.corsProxy}${encodeURIComponent(fullUrl)}`;
+    }
+
+    // Método helper para procesar la respuesta del proxy CORS
+    private processProxyResponse(response: any): any {
+        if (response?.contents) {
+            try {
+                return JSON.parse(response.contents);
+            } catch (e) {
+                console.error('Error parsing proxy response', e);
+                return response;
+            }
+        }
+        return response;
+    }
+
     getLibrosByGenero(genero: string){
         console.log(genero);
-        return this.http.get<any>(`${this.apiUrl}/subjects/${genero}.json?limit=10`)
+        return this.http.get<any>(this.getUrl(`/subjects/${genero}.json?limit=10`))
         .pipe(
+            map(response => this.processProxyResponse(response)),
             map(response  => 
             {
                 const works = Array.isArray(response?.works) ? response.works : []; 
@@ -40,8 +63,9 @@ export class OpenLibraryService {
 
     
 searchLibro(query: string){
-    return this.http.get<any>(`${this.apiUrl}/search.json?q=${query}&limit=10`)
+    return this.http.get<any>(this.getUrl(`/search.json?q=${query}&limit=10`))
     .pipe(
+        map(response => this.processProxyResponse(response)),
         map(response  => {
             const docs = Array.isArray(response?.docs) ? response.docs : [];
             return docs.map((item:any) => ({
@@ -53,20 +77,26 @@ searchLibro(query: string){
                 fechaPublicacion: item.publish_date ?? new Date(),
                 portada: item.cover_i ? `https://covers.openlibrary.org/b/id/${item.cover_i}-L.jpg` : null,
             }));
+        }),
+        catchError(error => {
+            console.error('Error al buscar libros', error);
+            return of([]);
         }),     
     );
 }
 
 private getAutorNameByKey(authorKey: string) {
     // authorKey viene como "/authors/OLxxxA"
-    return this.http.get<any>(`${this.apiUrl}${authorKey}.json`).pipe(
+    return this.http.get<any>(this.getUrl(`${authorKey}.json`)).pipe(
+      map(response => this.processProxyResponse(response)),
       map(a => a?.name ?? ''),
       catchError(() => of(''))
     );
   }
 
 getLibroById(id: string) {
-    return this.http.get<any>(`${this.apiUrl}/${id}.json`).pipe(
+    return this.http.get<any>(this.getUrl(`/${id}.json`)).pipe(
+      map(response => this.processProxyResponse(response)),
       switchMap(work => {
         const desc =
           typeof work?.description === 'string'
