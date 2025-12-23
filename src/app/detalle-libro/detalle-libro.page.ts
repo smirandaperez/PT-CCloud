@@ -6,6 +6,7 @@ import { ListaService } from '../servicios/lista.service';
 import { GuardarListaComponent } from '../modals/guardar-lista-modal/guardar-lista.component';
 import { ModalController, ToastController } from '@ionic/angular';
 import { LibroRepository } from '../servicios/libro.respository';
+import { NetworkService } from '../servicios/network.service';
 
 
 @Component({
@@ -19,6 +20,7 @@ export class DetalleLibroPage implements OnInit {
   detalleLibro: any;
   loading = true;
   defaultBackHref: string | null = null;
+  online$ = this.networkService.statusChanges();
 
   constructor(
     private listaService: ListaService,
@@ -27,7 +29,8 @@ export class DetalleLibroPage implements OnInit {
     private api: OpenLibraryService,
     private modalController: ModalController,
     private toastController: ToastController,
-    private libroRepository: LibroRepository
+    private libroRepository: LibroRepository,
+    private networkService: NetworkService
   ) { }
 
   ngOnInit() {
@@ -130,6 +133,10 @@ export class DetalleLibroPage implements OnInit {
 
   get descripcion(): string {
     return this.detalleLibro?.descripcion ?? this.detalleLibro?.description ?? 'Sin descripción disponible.';
+  }
+
+  get fechaPublicacion(): string {
+    return this.detalleLibro?.fechaPublicacion ?? this.detalleLibro?.publish_date ?? 'Sin fecha de publicación disponible.';
   }
 
   get coverUrl(): string | null {

@@ -8,8 +8,10 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-
-  <ion-spinner *ngIf="loading"></ion-spinner>
+  <app-sin-conexion mensaje="Sin conexión a internet" [mostrarIcono]="true"></app-sin-conexion>
+  
+  <div *ngIf="(online$ | async)?.connected !== false">
+    <ion-spinner *ngIf="loading"></ion-spinner>
 
   <ion-text color="danger" *ngIf="error">{{ errorMessage }}</ion-text>
 
@@ -42,5 +44,6 @@
     <ion-text *ngIf="!hasMore" color="medium">
       <p>No hay más libros disponibles</p>
     </ion-text>
+  </div>
   </div>
 </ion-content>

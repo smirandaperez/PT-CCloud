@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { OpenLibraryService } from '../servicios/open-library.service';
 import { Libro } from '../modelos/libro.modelo';
 import { Router } from '@angular/router';
+import { NetworkService } from '../servicios/network.service';
 
 @Component({
   selector: 'app-libros',
@@ -21,8 +22,14 @@ export class LibrosPage implements OnInit {
   offset = 0;
   limit = 10;
   hasMore = true;
+  online$ = this.networkService.statusChanges();
 
-  constructor(private router: Router, private route: ActivatedRoute, private openLibraryService: OpenLibraryService) { }
+  constructor(
+    private router: Router, 
+    private route: ActivatedRoute, 
+    private openLibraryService: OpenLibraryService,
+    private networkService: NetworkService
+  ) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {

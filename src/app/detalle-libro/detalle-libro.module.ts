@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { DetalleLibroPageRoutingModule } from './detalle-libro-routing.module';
 
 import { DetalleLibroPage } from './detalle-libro.page';
+import { SinConexionModule } from '../components/sin-conexion/sin-conexion.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    DetalleLibroPageRoutingModule
+    DetalleLibroPageRoutingModule,
+    SinConexionModule
   ],
   declarations: [DetalleLibroPage]
 })

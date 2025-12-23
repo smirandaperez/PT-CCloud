@@ -14,9 +14,8 @@ export class AppComponent implements OnInit {
     this.bootstrap();
   }
   async ngOnInit() {
-    
+    await this.network.init();
     await this.listaService.init();
-  
   }
   async bootstrap() {
     try {

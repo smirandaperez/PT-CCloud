@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { OpenLibraryService } from '../servicios/open-library.service';
 import { Libro } from '../modelos/libro.modelo';
 import { Router } from '@angular/router';
+import { NetworkService } from '../servicios/network.service';
 
 @Component({
   selector: 'app-tab2',
@@ -18,10 +19,12 @@ export class Tab2Page {
   limit = 10;
   hasMore = true;
   currentQuery = '';
+  online$ = this.networkService.statusChanges();
 
   constructor(
     private openLibraryService: OpenLibraryService,
-    private router: Router
+    private router: Router,
+    private networkService: NetworkService
   ) { }
 
   buscarLibro(event: any) {

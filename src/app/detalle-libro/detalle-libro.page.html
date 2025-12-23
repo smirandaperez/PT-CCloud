@@ -11,8 +11,10 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-
-  <ng-container *ngIf="!loading; else cargando">
+  <app-sin-conexion mensaje="Sin conexión a internet" [mostrarIcono]="true"></app-sin-conexion>
+  
+  <div *ngIf="(online$ | async)?.connected !== false">
+    <ng-container *ngIf="!loading; else cargando">
     <ion-card>
       <img *ngIf="coverUrl; else sinImagen" [src]="coverUrl" alt="Portada del libro">
       <ng-template #sinImagen>
@@ -25,21 +27,20 @@
     <ion-card-header>
       <ion-card-title>{{ titulo }}</ion-card-title>
       <ion-card-subtitle *ngIf="autores.length; else sinAutor">{{ autores.join(', ') }}</ion-card-subtitle>
+      <ion-card-subtitle *ngIf="fechaPublicacion">Fecha de publicación: {{ fechaPublicacion | date:'dd/MM/yyyy' }}</ion-card-subtitle>
       <ng-template #sinAutor>
         <ion-card-subtitle>Sin autor</ion-card-subtitle>
       </ng-template>
     </ion-card-header>
     
     <ion-card-content *ngIf="descripcion">
-      <p>{{ descripcion }}</p>
-   
-
-      
+      <p>{{ descripcion }}</p>  
       <ion-button size="small" fill="solid" (click)="abrirGuardarEnLista()">Agregar a lista de lectura</ion-button>
     </ion-card-content>
   </ng-container>
 
-  <ng-template #cargando>
-    <ion-spinner></ion-spinner>
-  </ng-template>
+    <ng-template #cargando>
+      <ion-spinner></ion-spinner>
+    </ng-template>
+  </div>
 </ion-content>
