@@ -1,0 +1,10 @@
+<div class="sin-conexion-container" *ngIf="(online$ | async)?.connected === false">
+  <ion-icon *ngIf="mostrarIcono" name="cloud-offline-outline" size="large" color="medium"></ion-icon>
+  <h2>{{ mensaje }}</h2>
+  <p>Por favor, verifica tu conexión a internet e intenta nuevamente.</p>
+  <ion-button fill="outline" (click)="reintentar()">
+    <ion-icon name="refresh-outline" slot="start"></ion-icon>
+    Reintentar
+  </ion-button>
+</div>
+
