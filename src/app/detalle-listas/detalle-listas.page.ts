@@ -20,7 +20,6 @@ export class DetalleListasPage implements OnInit {
     if (!id) { return; }
 
     this.lista = this.listaService.getListas().find(l => l.id === id) ?? { id, nombre: '', createdAt: Date.now() };
-
   }
 
   ionViewWillEnter() {

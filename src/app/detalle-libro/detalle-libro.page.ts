@@ -8,7 +8,6 @@ import { ModalController, ToastController } from '@ionic/angular';
 import { LibroRepository } from '../servicios/libro.respository';
 import { NetworkService } from '../servicios/network.service';
 
-
 @Component({
   selector: 'app-detalle-libro',
   templateUrl: './detalle-libro.page.html',
@@ -56,8 +55,6 @@ export class DetalleLibroPage implements OnInit {
       error: () => { this.loading = false },
     });
   }
-
-
 
   async abrirGuardarEnLista() {
     const listas = this.listaService.getListas();
